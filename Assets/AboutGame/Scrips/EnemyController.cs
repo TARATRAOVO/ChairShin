@@ -16,6 +16,7 @@ public class EnemyController : MonoBehaviour
     public bool Alive = true;
     public GameObject ScoreBoard;
     public int ScoreValue = 10;
+    public float ParalyzingPower = 2.0f;
     
     // Start is called before the first frame update
     void Start()
@@ -31,7 +32,7 @@ public class EnemyController : MonoBehaviour
     {
         if (DishPicking)
         {
-            Destination = Exit.GetComponent<Exit>().ExitPoints[0].position;
+            Destination = ChoseAnExit().position;
         }
         else
         {
@@ -41,12 +42,30 @@ public class EnemyController : MonoBehaviour
         Vector3 ToForward = Vector3.Normalize(Destination - transform.position);
         transform.forward = new Vector3(ToForward.x, transform.forward.y, ToForward.z);
 
-        CheckDeath();
         if (Alive == true)
         {
             PickTheDish();
             CarryTheDish();
         }
+        CheckDeath();
+    }
+
+    public Transform ChoseAnExit()
+    {
+        Transform TheExit = Exit.GetComponent<Exit>().ExitPoints[0];
+        print(TheExit.position);
+        float TheDistance = Vector3.Distance(TheExit.position, transform.position);
+        foreach (var SingleExit in Exit.GetComponent<Exit>().ExitPoints)
+        { 
+            if (Vector3.Distance(SingleExit.position, transform.position) < TheDistance)
+            {
+                TheExit = SingleExit;
+                
+                TheDistance = Vector3.Distance(SingleExit.position, SingleExit.position);
+            }
+        }
+        print(TheExit.position);
+        return TheExit;
     }
 
 
@@ -57,6 +76,8 @@ public class EnemyController : MonoBehaviour
             if (DishPicking)
             {
                 DishPicking.transform.position = new Vector3(this.transform.position.x, 0.3333f, this.transform.position.z);
+                DishPicking.GetComponent<Target>().WhoTag = "Enemy";
+                DishPicking.GetComponent<Target>().IsPickedUp = false;
                 DishPicking = null;
             }
             Alive = false;
@@ -98,6 +119,8 @@ public class EnemyController : MonoBehaviour
         if (DishPicking)
         {
             DishPicking.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 1.6f, this.transform.position.z);
+            DishPicking.GetComponent<Target>().WhoTag = this.tag;
+            DishPicking.GetComponent<Target>().IsPickedUp = true;
         }
     }
 

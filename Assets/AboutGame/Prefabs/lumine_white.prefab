@@ -2253,7 +2253,7 @@ GameObject:
   - component: {fileID: 4850824535836662122}
   m_Layer: 9
   m_Name: lumine_white
-  m_TagString: CharactorWhite
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2532,8 +2532,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Target: {fileID: 0}
+  IsPicking: 0
   MaxHealth: 5
   CurrentHealth: 0
+  DishPicking: {fileID: 0}
+  Exit: {fileID: 0}
+  Alive: 1
+  ScoreBoard: {fileID: 0}
+  ScoreValue: 10
 --- !u!136 &5401774547835512541
 CapsuleCollider:
   m_ObjectHideFlags: 0

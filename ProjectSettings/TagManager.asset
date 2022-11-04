@@ -15,6 +15,7 @@ TagManager:
   - Target
   - Exit
   - ScoreBoard
+  - TheEventsController
   layers:
   - Default
   - TransparentFX
