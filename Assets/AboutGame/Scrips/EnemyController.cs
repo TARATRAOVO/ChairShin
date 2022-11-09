@@ -6,10 +6,11 @@ using UnityEngine.UI;
 
 public class EnemyController : MonoBehaviour
 {
-    public GameObject Target;
+    public GameObject[] Targets;
     public bool IsPicking = false;
-    private Vector3 Destination;
-    public float MaxHealth = 10;
+    public bool OnSit = false;
+    public Transform Destination;
+    public float MaxHealth = 1;
     public float CurrentHealth;
     public GameObject DishPicking;
     public GameObject Exit;
@@ -17,14 +18,23 @@ public class EnemyController : MonoBehaviour
     public GameObject ScoreBoard;
     public int ScoreValue = 10;
     public float ParalyzingPower = 2.0f;
-    
+    public float SitDistance = 0.5f;
+    public float PickDistance = 1.0f;
+    public Animator Anim;
+
+    public GameObject Player;
+
+
     // Start is called before the first frame update
     void Start()
     {
+        Player = GameObject.FindGameObjectWithTag("Player");
         CurrentHealth = MaxHealth;
-        Target = GameObject.FindGameObjectWithTag("Target");
+        Targets = GameObject.FindGameObjectsWithTag("Target");
         Exit = GameObject.FindGameObjectWithTag("Exit");
         ScoreBoard = GameObject.FindGameObjectWithTag("ScoreBoard");
+        Anim = GetComponent<Animator>();
+
     }
 
     // Update is called once per frame
@@ -32,14 +42,19 @@ public class EnemyController : MonoBehaviour
     {
         if (DishPicking)
         {
-            Destination = ChoseAnExit().position;
+            Destination = ChoseAnExit();
+        }
+        else if(OnSit)
+        {
+            Destination = Player.transform;
         }
         else
         {
-            Destination = Target.transform.position;
+            Destination = ChooseATarget();
         }
 
-        Vector3 ToForward = Vector3.Normalize(Destination - transform.position);
+
+        Vector3 ToForward = Vector3.Normalize(Destination.position - transform.position);
         transform.forward = new Vector3(ToForward.x, transform.forward.y, ToForward.z);
 
         if (Alive == true)
@@ -48,24 +63,53 @@ public class EnemyController : MonoBehaviour
             CarryTheDish();
         }
         CheckDeath();
+        DetectChair();
     }
 
     public Transform ChoseAnExit()
     {
-        Transform TheExit = Exit.GetComponent<Exit>().ExitPoints[0];
-        print(TheExit.position);
-        float TheDistance = Vector3.Distance(TheExit.position, transform.position);
-        foreach (var SingleExit in Exit.GetComponent<Exit>().ExitPoints)
-        { 
-            if (Vector3.Distance(SingleExit.position, transform.position) < TheDistance)
+        Transform TheExit = ChooseTheNearestTransform(Exit.GetComponent<Exit>().ExitPoints);
+        return TheExit;
+    }
+
+    public Transform ChooseATarget()
+    {
+        GameObject TheTarget = ChooseTheNearestGameObject(GameObject.FindGameObjectsWithTag("Target"));
+        return TheTarget.transform;
+    }
+
+    public Transform ChooseTheNearestTransform(Transform[] TheOnes) //输入一组transform，输出距离本物体最近的物体
+    {
+        Transform TheOne = TheOnes[0];
+
+        float TheDistance = Vector3.Distance(TheOne.position, transform.position);
+        foreach(Transform One in TheOnes)
+        {
+            if (Vector3.Distance(One.position, transform.position) < TheDistance)
             {
-                TheExit = SingleExit;
-                
-                TheDistance = Vector3.Distance(SingleExit.position, SingleExit.position);
+                TheOne = One;
+
+                TheDistance = Vector3.Distance(One.position, transform.position);
             }
         }
-        print(TheExit.position);
-        return TheExit;
+        return TheOne;
+    }
+
+    public GameObject ChooseTheNearestGameObject(GameObject[] TheOnes) //输入一组gameobject，输出距离本物体最近的物体
+    {
+        GameObject TheOne = TheOnes[0];
+
+        float TheDistance = Vector3.Distance(TheOne.transform.position, transform.position);
+        foreach(GameObject One in TheOnes)
+        {
+            if (Vector3.Distance(One.transform.position, transform.position) < TheDistance)
+            {
+                TheOne = One;
+
+                TheDistance = Vector3.Distance(One.transform.position, transform.position);
+            }
+        }
+        return TheOne;
     }
 
 
@@ -106,11 +150,12 @@ public class EnemyController : MonoBehaviour
     public void PickTheDish()
     {
         float TheDistance;
-        TheDistance = Vector3.Distance(Target.transform.position, this.transform.position);
-
-        if (TheDistance <= 0.5)
+        Transform Target = ChooseATarget();
+        TheDistance = Vector3.Distance(Target.position, this.transform.position);
+        if (TheDistance < PickDistance)
         {
-            DishPicking = Target;
+            DishPicking = Target.gameObject;
+            Target.GetComponent<Target>().IsOnTable = false;
         }
     }
 
@@ -121,7 +166,34 @@ public class EnemyController : MonoBehaviour
             DishPicking.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 1.6f, this.transform.position.z);
             DishPicking.GetComponent<Target>().WhoTag = this.tag;
             DishPicking.GetComponent<Target>().IsPickedUp = true;
+            IsPicking = true;
         }
+    }
+
+    public void DetectChair()
+    {
+        foreach (Transform TowerChair in GameObject.Find("Towers").transform)
+        {
+            if (Vector3.Distance(transform.position, TowerChair.position) < SitDistance)
+            {
+                if (OnSit == false && IsPicking == false && TowerChair.GetComponent<Duplicate>().BeSitted == false)
+                {
+                    OnSit = true;
+                    SitTheChair(TowerChair);
+                }
+            }
+        }
+    }
+
+    public void SitTheChair(Transform ChairToSit)
+    {
+        Anim.applyRootMotion = false;
+        ChairToSit.position = transform.position;
+        ChairToSit.rotation = transform.rotation;
+        Anim.SetTrigger("Sit");
+        ChairToSit.GetComponent<Duplicate>().BeSitted = true;
+
+        ChairToSit.parent = this.transform;
     }
 
 }

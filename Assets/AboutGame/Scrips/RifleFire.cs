@@ -30,12 +30,15 @@ public class RifleFire : MonoBehaviour
     {
         if (Inputs.fire)
         {
-            if (Time.time - LastFireTime > FireLag)
+            if (gameObject.GetComponentInParent<Duplicate>().BeSitted == true)
             {
-                GameObject TheBullet;
-                TheBullet = Instantiate(RifleBullet, transform.position, transform.rotation);
-                TheBullet.GetComponent<Rigidbody>().velocity = BulletSpeed * transform.forward;
-                LastFireTime = Time.time;
+                if (Time.time - LastFireTime > FireLag)
+                {
+                    GameObject TheBullet;
+                    TheBullet = Instantiate(RifleBullet, transform.position, transform.rotation);
+                    TheBullet.GetComponent<Rigidbody>().velocity = BulletSpeed * transform.forward;
+                    LastFireTime = Time.time;
+                }
             }
         }
     }

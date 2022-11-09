@@ -143,12 +143,22 @@ public class ExplodingProjectile : MonoBehaviour
         Instantiate(explosionPrefab, gameObject.transform.position, Quaternion.Euler(0, 0, 0));
         Destroy(gameObject);
     }
+
     void Hurt(RaycastHit hit)
     {
         if (LayerMask.LayerToName(hit.collider.gameObject.layer) == "Enemy")
         {
             hit.collider.gameObject.GetComponent<EnemyController>().CurrentHealth -= damage;
         }
+
+        if (LayerMask.LayerToName(hit.collider.gameObject.layer) == "Player")
+        {
+
+        }
+
+        print(LayerMask.LayerToName(hit.collider.gameObject.layer));
+
+
     }
 }
 

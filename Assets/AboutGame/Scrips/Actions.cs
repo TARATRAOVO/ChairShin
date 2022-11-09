@@ -17,6 +17,7 @@ public class Actions : MonoBehaviour
     void Start()
     {
         Inputs = GetComponent<PlayerInput>();
+        SitTheChair();
     }
 
     // Update is called once per frame
@@ -47,6 +48,7 @@ public class Actions : MonoBehaviour
                 if (Distance <= 1)
                 {
                     DishPicking = Target;
+                    Target.GetComponent<Target>().IsOnTable = false;
                 }
             }
         }
@@ -54,7 +56,6 @@ public class Actions : MonoBehaviour
 
     public void DropTheDish()
     {
-        DishPicking.transform.position = new Vector3(this.transform.position.x, 0.3333f, this.transform.position.z);
         DishPicking.GetComponent<Target>().IsPickedUp = false;
         DishPicking = null;
     }
@@ -103,5 +104,10 @@ public class Actions : MonoBehaviour
             DishPicking.GetComponent<Target>().WhoTag = this.tag;
             DishPicking.GetComponent<Target>().IsPickedUp = true;
         }
+    }
+
+    public void SitTheChair()
+    {
+        gameObject.GetComponentInChildren<Duplicate>().BeSitted = true;
     }
 }

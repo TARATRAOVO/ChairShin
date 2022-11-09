@@ -6,17 +6,18 @@ using UnityEngine.SceneManagement;
 public class TheEvents : MonoBehaviour
 {
     public string SceneToStart;
+    public bool IsEnd = false;
     public GameObject EndInterface;
     // Start is called before the first frame update
     void Start()
     {
-        EndInterface = GameObject.Find("EndInterface");
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        print(Time.timeScale);
+        
     }
 
     public void RestartGame()

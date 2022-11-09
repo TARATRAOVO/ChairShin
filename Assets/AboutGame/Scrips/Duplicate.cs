@@ -6,10 +6,10 @@ public class Duplicate : MonoBehaviour
 {
     public GameObject CurrentChair;
     public GameObject Towers;
+    public bool BeSitted = false;
     // Start is called before the first frame update
     void Start()
     {
-        CurrentChair = this.gameObject;
         Towers = GameObject.Find("Towers");
     }
 

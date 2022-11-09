@@ -5,7 +5,7 @@ using UnityEngine;
 public class Exit : MonoBehaviour
 {
     public Transform[] ExitPoints;
-    public Transform Dish;
+    public GameObject[] Dishes;
     public float EndDistance = 0.5f;
     public bool IfGameEnd = false;
     public GameObject TheEvents;
@@ -13,7 +13,8 @@ public class Exit : MonoBehaviour
     void Start()
     {
         ExitPoints = GetComponentsInChildren<Transform>();
-        Dish = GameObject.FindGameObjectWithTag("Target").transform;
+        ExitPoints[0] = ExitPoints[1];
+        Dishes = GameObject.FindGameObjectsWithTag("Target");
         TheEvents = GameObject.Find("TheEvents");
     }
 
@@ -27,11 +28,16 @@ public class Exit : MonoBehaviour
     {
         foreach (var ExitPoint in ExitPoints)
         {
-            if (Vector3.Distance(new Vector3(Dish.position.x, 0, Dish.position.z), ExitPoint.position) < EndDistance)
+            foreach (GameObject Dish in Dishes)
             {
-                TheEvents.SendMessage("Lose");
-                Destroy(Dish.gameObject);//如果没有destroy的话会发送多次Lose，使得游戏重开之后还是时间暂停
+                float DishExitDistance = Vector3.Distance(new Vector3(Dish.transform.position.x, 0, Dish.transform.position.z), ExitPoint.position);
+                if (DishExitDistance < EndDistance)
+                {
+                    TheEvents.SendMessage("Lose");
+                    this.gameObject.SetActive(false);//停止发送“Lose”信号
+                }
             }
+
         }
     }
 }

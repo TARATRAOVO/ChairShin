@@ -6,11 +6,12 @@ using UnityEngine;
 public class EndScript : MonoBehaviour
 {
     public GameObject TheEvents;
+    public GameObject EndInterface;
     // Start is called before the first frame update
     void Start()
     {
         TheEvents = GameObject.FindGameObjectWithTag("TheEventsController");
-        this.gameObject.SetActive(false);
+        EndInterface.SetActive(false);
     }
 
     // Update is called once per frame
@@ -22,6 +23,5 @@ public class EndScript : MonoBehaviour
     public void OnClickRestart()
     {
         TheEvents.SendMessage("RestartGame");
-        this.gameObject.SetActive(false);
     }
 }

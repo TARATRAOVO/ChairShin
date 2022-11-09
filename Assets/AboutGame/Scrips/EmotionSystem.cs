@@ -50,7 +50,7 @@ public class EmotionSystem : MonoBehaviour
         {
             foreach(var Enemy in Enemies)
             {
-                Enemy.GetComponent<Animator>().speed = 2.0f;
+                Enemy.GetComponent<Animator>().speed = 1.5f;
             }
             
         }
@@ -58,7 +58,7 @@ public class EmotionSystem : MonoBehaviour
         {
             foreach(var Enemy in Enemies)
             {
-                Enemy.GetComponent<Animator>().speed = 1.0f;
+                Enemy.GetComponent<Animator>().speed = 1.5f;
             }
         }
         

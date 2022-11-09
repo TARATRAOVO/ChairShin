@@ -5,7 +5,10 @@ using UnityEngine;
 public class Target : MonoBehaviour
 {
     public bool IsPickedUp = false;
+    public bool IsCooking = false;
+    public bool IsOnTable = false;
     public string WhoTag;
+    public bool PizzaLeft;
     // Start is called before the first frame update
     void Start()
     {
@@ -16,6 +19,7 @@ public class Target : MonoBehaviour
     void Update()
     {
         TickUnpick();
+        KeepOnGround();
     }
 
     public void PickORPlace()
@@ -28,6 +32,20 @@ public class Target : MonoBehaviour
         if(IsPickedUp == false)
         {
             WhoTag = null;
+        }
+    }
+
+    public void KeepOnGround()
+    {
+        if(!IsPickedUp)
+        {
+            if(!IsOnTable)
+            {
+                if(!IsCooking)
+                {
+                    transform.position = new Vector3(transform.position.x, 0.33333f, transform.position.z);
+                }
+            }
         }
     }
 }
