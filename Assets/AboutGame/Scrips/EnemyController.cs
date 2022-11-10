@@ -20,6 +20,8 @@ public class EnemyController : MonoBehaviour
     public float ParalyzingPower = 2.0f;
     public float SitDistance = 0.5f;
     public float PickDistance = 1.0f;
+    public float EatDistance = 2.0f;
+    public bool IsFull = false;
     public Animator Anim;
 
     public GameObject Player;
@@ -40,11 +42,13 @@ public class EnemyController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Targets = GameObject.FindGameObjectsWithTag("Target");//随时更新目标
+
         if (DishPicking)
         {
             Destination = ChoseAnExit();
         }
-        else if(OnSit)
+        else if (OnSit)
         {
             Destination = Player.transform;
         }
@@ -53,7 +57,6 @@ public class EnemyController : MonoBehaviour
             Destination = ChooseATarget();
         }
 
-
         Vector3 ToForward = Vector3.Normalize(Destination.position - transform.position);
         transform.forward = new Vector3(ToForward.x, transform.forward.y, ToForward.z);
 
@@ -61,6 +64,7 @@ public class EnemyController : MonoBehaviour
         {
             PickTheDish();
             CarryTheDish();
+            FindAndEatPizza();
         }
         CheckDeath();
         DetectChair();
@@ -74,7 +78,7 @@ public class EnemyController : MonoBehaviour
 
     public Transform ChooseATarget()
     {
-        GameObject TheTarget = ChooseTheNearestGameObject(GameObject.FindGameObjectsWithTag("Target"));
+        GameObject TheTarget = ChooseTheNearestGameObject(Targets);
         return TheTarget.transform;
     }
 
@@ -83,7 +87,7 @@ public class EnemyController : MonoBehaviour
         Transform TheOne = TheOnes[0];
 
         float TheDistance = Vector3.Distance(TheOne.position, transform.position);
-        foreach(Transform One in TheOnes)
+        foreach (Transform One in TheOnes)
         {
             if (Vector3.Distance(One.position, transform.position) < TheDistance)
             {
@@ -100,7 +104,7 @@ public class EnemyController : MonoBehaviour
         GameObject TheOne = TheOnes[0];
 
         float TheDistance = Vector3.Distance(TheOne.transform.position, transform.position);
-        foreach(GameObject One in TheOnes)
+        foreach (GameObject One in TheOnes)
         {
             if (Vector3.Distance(One.transform.position, transform.position) < TheDistance)
             {
@@ -141,25 +145,22 @@ public class EnemyController : MonoBehaviour
 
         return point;
     }
-
-    public void Leave()
+    public void PickTheDish()//捡起附近的盘子
     {
-
-    }
-
-    public void PickTheDish()
-    {
-        float TheDistance;
-        Transform Target = ChooseATarget();
-        TheDistance = Vector3.Distance(Target.position, this.transform.position);
-        if (TheDistance < PickDistance)
+        if (IsPicking == false && OnSit == false)
         {
-            DishPicking = Target.gameObject;
-            Target.GetComponent<Target>().IsOnTable = false;
+            float TheDistance;
+            Transform Target = ChooseATarget();
+            TheDistance = Vector3.Distance(Target.position, this.transform.position);
+            if (TheDistance < PickDistance)
+            {
+                DishPicking = Target.gameObject;
+                Target.GetComponent<Target>().IsOnTable = false;
+            }
         }
-    }
 
-    public void CarryTheDish()
+    }
+    public void CarryTheDish()//带着盘子移动
     {
         if (DishPicking)
         {
@@ -169,7 +170,6 @@ public class EnemyController : MonoBehaviour
             IsPicking = true;
         }
     }
-
     public void DetectChair()
     {
         foreach (Transform TowerChair in GameObject.Find("Towers").transform)
@@ -194,6 +194,29 @@ public class EnemyController : MonoBehaviour
         ChairToSit.GetComponent<Duplicate>().BeSitted = true;
 
         ChairToSit.parent = this.transform;
+    }
+
+    public void FindAndEatPizza()//吃掉就近的pizza，然后吃饱，减少pizza，减少急，增加分数
+    {
+        if (IsFull == false)
+        {
+            if (OnSit)
+            {
+                foreach (GameObject Target in Targets)
+                {
+                    if (Vector3.Distance(this.transform.position, Target.transform.position) < EatDistance)
+                    {
+                        if (Target.GetComponent<Target>().PizzaLeft > 0)
+                        {
+                            Target.GetComponent<Target>().PizzaLeft -= 1.0f;
+                            IsFull = true;
+                        }
+                    }
+
+                }
+            }
+        }
+
     }
 
 }

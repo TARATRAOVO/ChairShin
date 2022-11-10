@@ -2545,6 +2545,8 @@ MonoBehaviour:
   ParalyzingPower: 2
   SitDistance: 0.5
   PickDistance: 1
+  EatDistance: 2
+  IsFull: 0
   Anim: {fileID: 0}
   Player: {fileID: 0}
 --- !u!136 &5401774547835512541

@@ -8,7 +8,7 @@ public class Target : MonoBehaviour
     public bool IsCooking = false;
     public bool IsOnTable = false;
     public string WhoTag;
-    public bool PizzaLeft;
+    public float PizzaLeft = 4.0f;
     // Start is called before the first frame update
     void Start()
     {

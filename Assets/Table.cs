@@ -13,6 +13,7 @@ public class Table : MonoBehaviour
     {
         Targets = GameObject.FindGameObjectsWithTag("Target");
         Towers = GameObject.Find("Towers");
+        DoDuplicate();
 
     }
 
@@ -20,6 +21,7 @@ public class Table : MonoBehaviour
     void Update()
     {
         CheckOnTable();
+        
     }
 
     public void CheckOnTable()
@@ -49,6 +51,7 @@ public class Table : MonoBehaviour
     }
     public void DoDuplicate()
     {
-        Instantiate(CurrentChair, this.transform.position, this.transform.rotation, Towers.transform);
+        Vector3 FollowChairPosition = new Vector3(this.transform.position.x + 1.0f, this.transform.position.y, this.transform.position.z);
+        Instantiate(CurrentChair, FollowChairPosition, this.transform.rotation, Towers.transform);
     }
 }

@@ -12,6 +12,8 @@ public class Actions : MonoBehaviour
     public GameObject DishPicking; //现在拿着的盘子
     public bool isParalyzed = false; //是否处于被攻击的麻痹状态
     public float ParalyzedRemain = 0;
+    public float GoldenTimeRemain = 0;
+    public float GoldenTime = 0.1f;
 
     // Start is called before the first frame update
     void Start()
@@ -72,25 +74,30 @@ public class Actions : MonoBehaviour
             Inputs.enabled = false;
             ParalyzedRemain -= Time.deltaTime;
 
-            if (ParalyzedRemain <= 0)
+            if (ParalyzedRemain <= 0)//恢复
             {
                 isParalyzed = false;
                 Inputs.enabled = true;
+                GoldenTimeRemain = GoldenTime;
             }
         }
-
         else
         {
-            EnemiesList = GameObject.FindGameObjectsWithTag("Enemy");
-            foreach (var Enemy in EnemiesList)
+            GoldenTimeRemain -= Time.deltaTime;
+            if (GoldenTimeRemain <= 0)
             {
-                float Distance1 = Vector3.Distance(this.transform.position, Enemy.transform.position);
-                if (Distance1 <= 1)
+                EnemiesList = GameObject.FindGameObjectsWithTag("Enemy");
+                foreach (var Enemy in EnemiesList)
                 {
-                    isParalyzed = true;
-                    ParalyzedRemain = Enemy.GetComponent<EnemyController>().ParalyzingPower;
+                    float Distance1 = Vector3.Distance(this.transform.position, Enemy.transform.position);
+                    if (Distance1 <= 1)
+                    {
+                        isParalyzed = true;
+                        ParalyzedRemain = Enemy.GetComponent<EnemyController>().ParalyzingPower;
+                    }
                 }
             }
+
         }
     }
 

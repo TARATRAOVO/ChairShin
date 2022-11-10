@@ -2531,9 +2531,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a807dbf6147043e99680d8382781852, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Target: {fileID: 0}
+  Targets: []
   IsPicking: 0
-  MaxHealth: 5
+  OnSit: 0
+  Destination: {fileID: 0}
+  MaxHealth: 1
   CurrentHealth: 0
   DishPicking: {fileID: 0}
   Exit: {fileID: 0}
@@ -2541,6 +2543,12 @@ MonoBehaviour:
   ScoreBoard: {fileID: 0}
   ScoreValue: 10
   ParalyzingPower: 2
+  SitDistance: 0.5
+  PickDistance: 1
+  EatDistance: 2
+  IsFull: 0
+  Anim: {fileID: 0}
+  Player: {fileID: 0}
 --- !u!136 &5401774547835512541
 CapsuleCollider:
   m_ObjectHideFlags: 0
