@@ -52,7 +52,6 @@ public class EmotionSystem : MonoBehaviour
             {
                 Enemy.GetComponent<Animator>().speed = 1.5f;
             }
-            
         }
         else
         {

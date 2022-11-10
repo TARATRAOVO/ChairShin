@@ -6,11 +6,12 @@ public class RifleFire : MonoBehaviour
 {
     public GameObject RifleBullet;
     public float FireLag = 0.2f;
-
+    public float FireLagD = 3.0f;
+    public bool IfAutoFire = false;
     private float LastFireTime;
     private StarterAssets.StarterAssetsInputs Inputs;
     private GameObject Player;
-    
+
 
     public float BulletSpeed = 10.0f;
     public float DisappearAfter = 1.0f;
@@ -25,7 +26,20 @@ public class RifleFire : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Fire();
+        if(transform.tag != "Player")
+        {
+            FireLag = FireLagD;
+        }
+        IfAutoFire = GetComponentInParent<Duplicate>().BeSitted;
+        if(IfAutoFire)
+        {
+            AutoFire();
+        }
+        else
+        {
+            Fire();
+        }
+
     }
 
     private void Fire()
@@ -45,6 +59,24 @@ public class RifleFire : MonoBehaviour
             }
         }
     }
+
+    public void AutoFire()
+    {
+        if (gameObject.GetComponentInParent<Duplicate>().BeSitted == true)
+        {
+            if (Time.time - LastFireTime > FireLag)
+            {
+                GameObject TheBullet;
+                TheBullet = Instantiate(RifleBullet, transform.position, transform.rotation);
+                TheBullet.GetComponent<Rigidbody>().velocity = BulletSpeed * transform.forward;
+                LastFireTime = Time.time;
+                Destroy(TheBullet, DisappearAfter);
+            }
+        }
+
+    }
+
+
 
 
 }

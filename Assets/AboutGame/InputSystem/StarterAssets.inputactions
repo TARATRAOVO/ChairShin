@@ -260,7 +260,7 @@
                 {
                     "name": "",
                     "id": "9c900de6-e647-430e-bc14-8cfbaa0ab7ff",
-                    "path": "<Keyboard>/f",
+                    "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "KeyboardMouse",
@@ -271,7 +271,7 @@
                 {
                     "name": "",
                     "id": "fb5054a9-7b20-4839-bceb-99ae711d0185",
-                    "path": "<Keyboard>/e",
+                    "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "KeyboardMouse",

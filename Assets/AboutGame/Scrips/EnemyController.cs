@@ -14,17 +14,28 @@ public class EnemyController : MonoBehaviour
     public float CurrentHealth;
     public GameObject DishPicking;
     public GameObject Exit;
+    public GameObject[] Chairs;
     public bool Alive = true;
-    public GameObject ScoreBoard;
+    public GameObject TheEvents;
     public int ScoreValue = 10;
-    public float ParalyzingPower = 2.0f;
-    public float SitDistance = 0.5f;
+    public float ParalyzingPower = 0.5f;
+    public float SitDistance = 1.0f;
     public float PickDistance = 1.0f;
     public float EatDistance = 2.0f;
+    public float TimeToEat = 2.0f;
+    public float ChairArmor = 5.0f;
+    public float PizzaEaten;
+    public float StealDelay = 5.0f;
+    public float StealRemain;
+    public float CrazySpeed = 3.0f;
     public bool IsFull = false;
     public Animator Anim;
-
     public GameObject Player;
+    public Rigidbody _rigidbody;
+    public float ChangeDirectionDelay = 3.0f;
+    public float ChangeDirectionRemain;
+    public Vector3 AfterDinnerDestination;
+
 
 
     // Start is called before the first frame update
@@ -34,34 +45,49 @@ public class EnemyController : MonoBehaviour
         CurrentHealth = MaxHealth;
         Targets = GameObject.FindGameObjectsWithTag("Target");
         Exit = GameObject.FindGameObjectWithTag("Exit");
-        ScoreBoard = GameObject.FindGameObjectWithTag("ScoreBoard");
+        TheEvents = GameObject.Find("TheEvents");
         Anim = GetComponent<Animator>();
-
     }
 
     // Update is called once per frame
     void Update()
     {
+        Destination = null;
         Targets = GameObject.FindGameObjectsWithTag("Target");//随时更新目标
+        Chairs = GameObject.FindGameObjectsWithTag("Chairs");
 
-        if (DishPicking)
+        foreach (GameObject Chair in Chairs)
         {
-            Destination = ChoseAnExit();
+            if (Chair.GetComponent<Duplicate>().BeSitted == false)
+            {
+                Destination = Chair.transform;
+            }
         }
-        else if (OnSit)
-        {
-            Destination = Player.transform;
-        }
-        else
+
+        if (!Destination)
         {
             Destination = ChooseATarget();
         }
+
+        if (IsPicking)
+        {
+            Destination = ChooseAnExit();
+        }
+
+        if (OnSit)
+        {
+            GameObject Empty = GameObject.Find("Empty");
+            Empty.transform.position = GetRandomLocation();
+            Destination = Empty.transform;
+        }
+
 
         Vector3 ToForward = Vector3.Normalize(Destination.position - transform.position);
         transform.forward = new Vector3(ToForward.x, transform.forward.y, ToForward.z);
 
         if (Alive == true)
         {
+            MoveAfterDinner();
             PickTheDish();
             CarryTheDish();
             FindAndEatPizza();
@@ -70,7 +96,7 @@ public class EnemyController : MonoBehaviour
         DetectChair();
     }
 
-    public Transform ChoseAnExit()
+    public Transform ChooseAnExit()
     {
         Transform TheExit = ChooseTheNearestTransform(Exit.GetComponent<Exit>().ExitPoints);
         return TheExit;
@@ -80,6 +106,19 @@ public class EnemyController : MonoBehaviour
     {
         GameObject TheTarget = ChooseTheNearestGameObject(Targets);
         return TheTarget.transform;
+    }
+
+    public Transform ChooseAnEnemy()
+    {
+        GameObject[] Enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        foreach (GameObject Enemy in Enemies)
+        {
+            if (!OnSit)
+            {
+                return Enemy.transform;
+            }
+        }
+        return Enemies[0].transform;
     }
 
     public Transform ChooseTheNearestTransform(Transform[] TheOnes) //输入一组transform，输出距离本物体最近的物体
@@ -116,7 +155,6 @@ public class EnemyController : MonoBehaviour
         return TheOne;
     }
 
-
     public void CheckDeath()
     {
         if (CurrentHealth <= 0)
@@ -129,22 +167,10 @@ public class EnemyController : MonoBehaviour
                 DishPicking = null;
             }
             Alive = false;
-            ScoreBoard.GetComponent<ScoreBoard>().Score += ScoreValue;
             Destroy(gameObject);
         }
     }
 
-    public Vector3 GetRandomLocation()
-    {
-        NavMeshTriangulation navMeshData = NavMesh.CalculateTriangulation();
-
-        int t = Random.Range(0, navMeshData.indices.Length - 3);
-
-        Vector3 point = Vector3.Lerp(navMeshData.vertices[navMeshData.indices[t]], navMeshData.vertices[navMeshData.indices[t + 1]], Random.value);
-        point = Vector3.Lerp(point, navMeshData.vertices[navMeshData.indices[t + 2]], Random.value);
-
-        return point;
-    }
     public void PickTheDish()//捡起附近的盘子
     {
         if (IsPicking == false && OnSit == false)
@@ -154,9 +180,19 @@ public class EnemyController : MonoBehaviour
             TheDistance = Vector3.Distance(Target.position, this.transform.position);
             if (TheDistance < PickDistance)
             {
+                if (Target.GetComponent<Target>().IsOnTable)
+                {
+                    StealDelay -= Time.deltaTime;
+                    if (StealDelay >= 0)
+                    {
+                        return;
+                    }
+                }
                 DishPicking = Target.gameObject;
                 Target.GetComponent<Target>().IsOnTable = false;
                 Target.GetComponent<Target>().IsOnChef = false;
+                DishPicking.GetComponent<Target>().WhoTag = this.tag;
+                DishPicking.GetComponent<Target>().IsPickedUp = true;
             }
         }
 
@@ -166,8 +202,6 @@ public class EnemyController : MonoBehaviour
         if (DishPicking)
         {
             DishPicking.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 1.6f, this.transform.position.z);
-            DishPicking.GetComponent<Target>().WhoTag = this.tag;
-            DishPicking.GetComponent<Target>().IsPickedUp = true;
             IsPicking = true;
         }
     }
@@ -188,12 +222,12 @@ public class EnemyController : MonoBehaviour
 
     public void SitTheChair(Transform ChairToSit)
     {
+        CurrentHealth += ChairArmor;
         Anim.applyRootMotion = false;
-        ChairToSit.position = transform.position;
-        ChairToSit.rotation = transform.rotation;
+        transform.position = ChairToSit.position;
+        transform.rotation = ChairToSit.rotation;
         Anim.SetTrigger("Sit");
         ChairToSit.GetComponent<Duplicate>().BeSitted = true;
-
         ChairToSit.parent = this.transform;
     }
 
@@ -205,12 +239,20 @@ public class EnemyController : MonoBehaviour
             {
                 foreach (GameObject Target in Targets)
                 {
-                    if (Vector3.Distance(this.transform.position, Target.transform.position) < EatDistance)
+                    if (Target.GetComponent<Target>().IsOnTable == true)
                     {
-                        if (Target.GetComponent<Target>().PizzaLeft >= 1.0f)
+                        if (Vector3.Distance(this.transform.position, Target.transform.position) < EatDistance)
                         {
-                            Target.GetComponent<Target>().PizzaLeft -= 1.0f;
-                            IsFull = true;
+                            if (Target.GetComponent<Target>().PizzaLeft >= 0)
+                            {
+                                PizzaEaten += Time.deltaTime / TimeToEat;
+                                Target.GetComponent<Target>().PizzaLeft -= Time.deltaTime / TimeToEat;
+                            }
+                            if (PizzaEaten >= 1)
+                            {
+                                TheEvents.GetComponent<TheEvents>().Score += ScoreValue;
+                                IsFull = true;
+                            }
                         }
                     }
 
@@ -218,6 +260,36 @@ public class EnemyController : MonoBehaviour
             }
         }
 
+    }
+
+    public void MoveAfterDinner()
+    {
+        if (IsFull)
+        {
+            ChangeDirectionRemain -= Time.deltaTime;
+
+            if (ChangeDirectionRemain <= 0)
+            {
+                ChangeDirectionRemain = ChangeDirectionDelay;
+                AfterDinnerDestination = GetRandomLocation();
+                Destination = ChooseAnEnemy();
+            }
+            else
+            {
+                transform.position = Vector3.MoveTowards(transform.position, AfterDinnerDestination, CrazySpeed * Time.deltaTime);
+            }
+
+        }
+    }
+
+
+    public Vector3 GetRandomLocation()
+    {
+        NavMeshTriangulation navMeshData = NavMesh.CalculateTriangulation();
+        int t = Random.Range(0, navMeshData.indices.Length - 3);
+        Vector3 point = Vector3.Lerp(navMeshData.vertices[navMeshData.indices[t]], navMeshData.vertices[navMeshData.indices[t + 1]], Random.value);
+        point = Vector3.Lerp(point, navMeshData.vertices[navMeshData.indices[t + 2]], Random.value);
+        return point;
     }
 
 }

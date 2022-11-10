@@ -11,6 +11,7 @@ public class Actions : MonoBehaviour
     public PlayerInput Inputs;
     public float PickDistance = 1.0f;
     public GameObject DishPicking; //现在拿着的盘子
+    public GameObject TheEvents;
     public bool isParalyzed = false; //是否处于被攻击的麻痹状态
     public float ParalyzedRemain = 0;
     public float GoldenTimeRemain = 0;
@@ -23,6 +24,7 @@ public class Actions : MonoBehaviour
     {
         Inputs = GetComponent<PlayerInput>();
         SInput = GetComponent<StarterAssets.StarterAssetsInputs>();
+        TheEvents = GameObject.Find("TheEvents");
         SitTheChair();
     }
 
@@ -44,7 +46,6 @@ public class Actions : MonoBehaviour
         {
             DropTheDish();
         }
-
         else
         {
             TargetList = GameObject.FindGameObjectsWithTag("Target");//所有在场的盘子
@@ -52,9 +53,11 @@ public class Actions : MonoBehaviour
             foreach (var Target in TargetList)//观察所有盘子的距离，在按下捡盘子键时捡起附近的盘子
             {
                 float Distance = Vector3.Distance(this.transform.position, Target.transform.position);
-                if (Distance <= 1)
+                if (Distance <= PickDistance)
                 {
                     DishPicking = Target;
+                    DishPicking.GetComponent<Target>().WhoTag = this.tag;
+                    DishPicking.GetComponent<Target>().IsPickedUp = true;
                     Target.GetComponent<Target>().IsOnTable = false;
                     Target.GetComponent<Target>().IsOnChef = false;
                 }
@@ -114,8 +117,6 @@ public class Actions : MonoBehaviour
         if (DishPicking)
         {
             DishPicking.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 1.5f, this.transform.position.z);
-            DishPicking.GetComponent<Target>().WhoTag = this.tag;
-            DishPicking.GetComponent<Target>().IsPickedUp = true;
         }
     }
 
@@ -126,17 +127,21 @@ public class Actions : MonoBehaviour
 
     public void CheckIfChairCanBePlaced()
     {
-        
         foreach (Transform TowerChair in GameObject.Find("Towers").transform)
         {
             if (Vector3.Distance(transform.position, TowerChair.position) < MinChairDistance)
             {
                 CanChairBePlaced = false;
-            }
-            else
-            {
-                CanChairBePlaced = true;
+                return;
             }
         }
+
+        if(TheEvents.GetComponent<TheEvents>().CurrentUsingChair >= TheEvents.GetComponent<TheEvents>().MaxChair)
+        {
+            CanChairBePlaced = false;
+            return;
+        }
+        
+        CanChairBePlaced = true;
     }
 }

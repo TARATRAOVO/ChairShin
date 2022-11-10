@@ -249,7 +249,7 @@ MonoBehaviour:
   ignorePrevRotation: 0
   explodeOnTimer: 0
   explosionTimer: 0
-  damage: 5
+  damage: 1
 --- !u!198 &198228151580939694
 ParticleSystem:
   m_ObjectHideFlags: 0

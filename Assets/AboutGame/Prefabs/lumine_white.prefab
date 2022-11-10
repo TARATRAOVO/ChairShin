@@ -2542,13 +2542,20 @@ MonoBehaviour:
   Alive: 1
   ScoreBoard: {fileID: 0}
   ScoreValue: 10
-  ParalyzingPower: 2
-  SitDistance: 0.5
+  ParalyzingPower: 0.5
+  SitDistance: 1
   PickDistance: 1
   EatDistance: 2
+  TimeToEat: 2
+  ChairArmor: 5
+  PizzaEaten: 0
   IsFull: 0
   Anim: {fileID: 0}
   Player: {fileID: 0}
+  _rigidbody: {fileID: 0}
+  ChangeDirectionDelay: 3
+  ChangeDirectionRemain: 0
+  AfterDinnerDestination: {x: 0, y: 0, z: 0}
 --- !u!136 &5401774547835512541
 CapsuleCollider:
   m_ObjectHideFlags: 0

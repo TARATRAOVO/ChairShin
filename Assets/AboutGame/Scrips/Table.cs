@@ -8,12 +8,11 @@ public class Table : MonoBehaviour
     public float OnTableDistance = 1.5f;
     public GameObject CurrentChair;
     public GameObject Towers;
+    public bool IsOn;
     // Start is called before the first frame update
     void Start()
     {
-        
         Towers = GameObject.Find("Towers");
-
     }
 
     // Update is called once per frame
@@ -30,27 +29,24 @@ public class Table : MonoBehaviour
             float TheDistance = Vector3.Distance(Target.transform.position, transform.position);
             if (TheDistance < OnTableDistance)
             {
-                OnTable(Target);
+                if (Target.GetComponent<Target>().IsPickedUp == false && !IsOn)
+                {
+                    OnTable(Target);
+                }
+                if (Target.GetComponent<Target>().IsOnTable)
+                {
+                    return;
+                }
             }
         }
-    }
+        IsOn = false;
 
+    }
     public void OnTable(GameObject Target)
     {
-        if (!Target.GetComponent<Target>().IsPickedUp)
-        {
-            if (!Target.GetComponent<Target>().IsOnTable)
-            {
-                Target.transform.position = this.transform.position;
-                Target.GetComponent<Target>().IsOnTable = true;
-            }
-
-        }
-
+        Target.transform.position = this.transform.position;
+        Target.GetComponent<Target>().IsOnTable = true;
+        IsOn = true;
     }
-    public void DoDuplicate()
-    {
-        Vector3 FollowChairPosition = new Vector3(this.transform.position.x + 1.0f, this.transform.position.y, this.transform.position.z);
-        Instantiate(CurrentChair, FollowChairPosition, this.transform.rotation, Towers.transform);
-    }
+
 }

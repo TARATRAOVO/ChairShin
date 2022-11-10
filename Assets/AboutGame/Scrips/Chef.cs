@@ -6,6 +6,7 @@ public class Chef : MonoBehaviour
 {
     public float CookingCost = 1.5f;
     public float OnChefDistance = 1.5f;
+    public bool IsOn;
     public GameObject[] Targets;
     // Start is called before the first frame update
     void Start()
@@ -27,27 +28,28 @@ public class Chef : MonoBehaviour
             float TheDistance = Vector3.Distance(Target.transform.position, transform.position);
             if (TheDistance < OnChefDistance)
             {
-                OnChef(Target);
+                if (Target.GetComponent<Target>().IsPickedUp == false && !IsOn)
+                {
+                    OnChef(Target);
+                }
+                if (Target.GetComponent<Target>().IsOnChef)
+                {
+                    OnChef(Target);
+                    return;
+                }
             }
         }
+        IsOn = false;
     }
     public void OnChef(GameObject Target)
     {
-        if (!Target.GetComponent<Target>().IsPickedUp)//如果不被人拿着
-        {
-            if (!Target.GetComponent<Target>().IsOnChef)//使其onchef
-            {
-                Target.transform.position = this.transform.position;
-                Target.GetComponent<Target>().IsOnChef = true;
-            }
-            else
-            {
-                if (Target.GetComponent<Target>().PizzaLeft < 4.0f)
-                {
-                    Target.GetComponent<Target>().PizzaLeft += (Time.deltaTime / CookingCost);
-                }
 
-            }
+        Target.transform.position = this.transform.position;
+        Target.GetComponent<Target>().IsOnChef = true;
+        IsOn = true;
+        if (Target.GetComponent<Target>().PizzaLeft < Target.GetComponent<Target>().MaxPizza)
+        {
+            Target.GetComponent<Target>().PizzaLeft += (Time.deltaTime / CookingCost);
         }
     }
 

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1128108772152246420}
   m_Layer: 8
   m_Name: Chairs
-  m_TagString: Untagged
+  m_TagString: Chairs
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -97,6 +97,7 @@ MonoBehaviour:
     type: 3}
   FireLag: 0.2
   BulletSpeed: 60
+  DisappearAfter: 1
 --- !u!1001 &1128108772080659373
 PrefabInstance:
   m_ObjectHideFlags: 0

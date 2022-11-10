@@ -8,6 +8,10 @@ public class TheEvents : MonoBehaviour
     public string SceneToStart;
     public bool IsEnd = false;
     public GameObject EndInterface;
+    public float MaxChair = 20;
+    public float CurrentUsingChair;
+    public int Score = 0;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -17,7 +21,12 @@ public class TheEvents : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        CheckUsingChairs();
+    }
+
+    public void CheckUsingChairs()
+    {
+        CurrentUsingChair = GameObject.FindGameObjectsWithTag("Chairs").Length;
     }
 
     public void RestartGame()
@@ -31,5 +40,6 @@ public class TheEvents : MonoBehaviour
         Time.timeScale = 0;
         EndInterface.SetActive(true);
     }
+
 }
 

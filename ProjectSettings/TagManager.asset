@@ -16,6 +16,10 @@ TagManager:
   - Exit
   - ScoreBoard
   - TheEventsController
+  - Chairs
+  - SkillBtn
+  - PosList
+  - Pizza
   layers:
   - Default
   - TransparentFX
