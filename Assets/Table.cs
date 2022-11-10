@@ -5,23 +5,22 @@ using UnityEngine;
 public class Table : MonoBehaviour
 {
     public GameObject[] Targets;
-    public float OnTableDistance = 1.0f;
+    public float OnTableDistance = 1.5f;
     public GameObject CurrentChair;
     public GameObject Towers;
     // Start is called before the first frame update
     void Start()
     {
-        Targets = GameObject.FindGameObjectsWithTag("Target");
+        
         Towers = GameObject.Find("Towers");
-        DoDuplicate();
 
     }
 
     // Update is called once per frame
     void Update()
     {
+        Targets = GameObject.FindGameObjectsWithTag("Target");
         CheckOnTable();
-        
     }
 
     public void CheckOnTable()

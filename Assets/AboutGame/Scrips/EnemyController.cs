@@ -156,6 +156,7 @@ public class EnemyController : MonoBehaviour
             {
                 DishPicking = Target.gameObject;
                 Target.GetComponent<Target>().IsOnTable = false;
+                Target.GetComponent<Target>().IsOnChef = false;
             }
         }
 
@@ -206,7 +207,7 @@ public class EnemyController : MonoBehaviour
                 {
                     if (Vector3.Distance(this.transform.position, Target.transform.position) < EatDistance)
                     {
-                        if (Target.GetComponent<Target>().PizzaLeft > 0)
+                        if (Target.GetComponent<Target>().PizzaLeft >= 1.0f)
                         {
                             Target.GetComponent<Target>().PizzaLeft -= 1.0f;
                             IsFull = true;

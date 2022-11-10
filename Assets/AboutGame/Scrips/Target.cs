@@ -7,8 +7,9 @@ public class Target : MonoBehaviour
     public bool IsPickedUp = false;
     public bool IsCooking = false;
     public bool IsOnTable = false;
+    public bool IsOnChef = false;
     public string WhoTag;
-    public float PizzaLeft = 4.0f;
+    public float PizzaLeft;
     // Start is called before the first frame update
     void Start()
     {

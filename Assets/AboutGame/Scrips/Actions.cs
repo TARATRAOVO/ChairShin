@@ -7,18 +7,22 @@ public class Actions : MonoBehaviour
 {
     public GameObject[] TargetList;
     public GameObject[] EnemiesList;
+    public StarterAssets.StarterAssetsInputs SInput;
     public PlayerInput Inputs;
     public float PickDistance = 1.0f;
     public GameObject DishPicking; //现在拿着的盘子
     public bool isParalyzed = false; //是否处于被攻击的麻痹状态
     public float ParalyzedRemain = 0;
     public float GoldenTimeRemain = 0;
-    public float GoldenTime = 0.1f;
+    public float GoldenTime = 0.3f;
+    public bool CanChairBePlaced = true;
+    public float MinChairDistance = 1.0f;
 
     // Start is called before the first frame update
     void Start()
     {
         Inputs = GetComponent<PlayerInput>();
+        SInput = GetComponent<StarterAssets.StarterAssetsInputs>();
         SitTheChair();
     }
 
@@ -27,6 +31,7 @@ public class Actions : MonoBehaviour
     {
         CarryTheDish();
         ParalyzedChecker();
+        CheckIfChairCanBePlaced();
     }
     private void FixedUpdate()
     {
@@ -51,6 +56,7 @@ public class Actions : MonoBehaviour
                 {
                     DishPicking = Target;
                     Target.GetComponent<Target>().IsOnTable = false;
+                    Target.GetComponent<Target>().IsOnChef = false;
                 }
             }
         }
@@ -70,7 +76,7 @@ public class Actions : MonoBehaviour
             {
                 DropTheDish();
             }
-
+            SInput.fire = false;
             Inputs.enabled = false;
             ParalyzedRemain -= Time.deltaTime;
 
@@ -116,5 +122,21 @@ public class Actions : MonoBehaviour
     public void SitTheChair()
     {
         gameObject.GetComponentInChildren<Duplicate>().BeSitted = true;
+    }
+
+    public void CheckIfChairCanBePlaced()
+    {
+        
+        foreach (Transform TowerChair in GameObject.Find("Towers").transform)
+        {
+            if (Vector3.Distance(transform.position, TowerChair.position) < MinChairDistance)
+            {
+                CanChairBePlaced = false;
+            }
+            else
+            {
+                CanChairBePlaced = true;
+            }
+        }
     }
 }

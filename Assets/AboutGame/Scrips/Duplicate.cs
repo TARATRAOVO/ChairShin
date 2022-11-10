@@ -21,6 +21,13 @@ public class Duplicate : MonoBehaviour
 
     public void DoDuplicate()
     {
-        Instantiate(CurrentChair, this.transform.position, this.transform.rotation, Towers.transform);
+        if (GameObject.FindGameObjectWithTag("Player").GetComponent<Actions>().CanChairBePlaced == true)
+        {
+            Instantiate(CurrentChair, this.transform.position, this.transform.rotation, Towers.transform);
+        }
     }
+
+
+
+
 }

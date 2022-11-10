@@ -156,9 +156,6 @@ public class ExplodingProjectile : MonoBehaviour
 
         }
 
-        print(LayerMask.LayerToName(hit.collider.gameObject.layer));
-
-
     }
 }
 
