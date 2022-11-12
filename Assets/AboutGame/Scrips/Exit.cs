@@ -7,6 +7,7 @@ public class Exit : MonoBehaviour
     public Transform[] ExitPoints;
     public GameObject[] Dishes;
     public float EndDistance = 0.5f;
+    public int liferemain = 2;
     public bool IfGameEnd = false;
     public GameObject TheEvents;
     // Start is called before the first frame update
@@ -33,8 +34,15 @@ public class Exit : MonoBehaviour
                 float DishExitDistance = Vector3.Distance(new Vector3(Dish.transform.position.x, 0, Dish.transform.position.z), ExitPoint.position);
                 if (DishExitDistance < EndDistance)
                 {
-                    TheEvents.SendMessage("Lose");
-                    this.gameObject.SetActive(false);//停止发送“Lose”信号
+                    liferemain -= 1;
+                    {
+                        if (liferemain <= 0)
+                        {
+                            TheEvents.SendMessage("Lose");
+                            this.gameObject.SetActive(false);//停止发送“Lose”信号
+                        }
+                    }
+
                 }
             }
 

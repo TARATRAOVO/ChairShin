@@ -16,14 +16,14 @@ public class EnemyController : MonoBehaviour
     public GameObject Exit;
     public GameObject[] Chairs;
     public bool Alive = true;
-    public GameObject TheEvents;
+    public TheEvents TheEvents;
     public int ScoreValue = 10;
     public float ParalyzingPower = 0.5f;
     public float SitDistance = 1.0f;
-    public float PickDistance = 1.0f;
-    public float EatDistance = 2.0f;
-    public float TimeToEat = 2.0f;
-    public float ChairArmor = 5.0f;
+    public float PickDistance = 2.0f;
+    public float EatDistance = 4.0f;
+    public float TimeToEat;
+    public float ChairArmor = 1.0f;
     public float PizzaEaten;
     public float StealDelay = 5.0f;
     public float StealRemain;
@@ -37,16 +37,20 @@ public class EnemyController : MonoBehaviour
     public Vector3 AfterDinnerDestination;
 
 
-
+    private void Awake()
+    {
+        Player = GameObject.FindGameObjectWithTag("Player");
+        TheEvents = GameObject.Find("TheEvents").GetComponent<TheEvents>();
+        CurrentHealth = MaxHealth;
+        TimeToEat = TheEvents.TimeToEat;
+        Targets = GameObject.FindGameObjectsWithTag("Target");
+        Exit = GameObject.FindGameObjectWithTag("Exit");
+        Anim = GetComponent<Animator>();
+    }
     // Start is called before the first frame update
     void Start()
     {
-        Player = GameObject.FindGameObjectWithTag("Player");
-        CurrentHealth = MaxHealth;
-        Targets = GameObject.FindGameObjectsWithTag("Target");
-        Exit = GameObject.FindGameObjectWithTag("Exit");
-        TheEvents = GameObject.Find("TheEvents");
-        Anim = GetComponent<Animator>();
+
     }
 
     // Update is called once per frame
@@ -180,14 +184,6 @@ public class EnemyController : MonoBehaviour
             TheDistance = Vector3.Distance(Target.position, this.transform.position);
             if (TheDistance < PickDistance)
             {
-                if (Target.GetComponent<Target>().IsOnTable)
-                {
-                    StealDelay -= Time.deltaTime;
-                    if (StealDelay >= 0)
-                    {
-                        return;
-                    }
-                }
                 DishPicking = Target.gameObject;
                 Target.GetComponent<Target>().IsOnTable = false;
                 Target.GetComponent<Target>().IsOnChef = false;

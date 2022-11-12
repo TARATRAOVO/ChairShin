@@ -5,13 +5,14 @@ using UnityEngine;
 public class Table : MonoBehaviour
 {
     public GameObject[] Targets;
-    public float OnTableDistance = 1.5f;
+    public float OnTableDistance;
     public GameObject CurrentChair;
     public GameObject Towers;
     public bool IsOn;
     // Start is called before the first frame update
     void Start()
     {
+        OnTableDistance = 2.0f;
         Towers = GameObject.Find("Towers");
     }
 

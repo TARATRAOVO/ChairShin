@@ -4,19 +4,22 @@ using UnityEngine;
 
 public class Chef : MonoBehaviour
 {
-    public float CookingCost = 1.5f;
-    public float OnChefDistance = 1.5f;
+    public float CookingCost;
+    public float OnChefDistance;
     public bool IsOn;
+    public TheEvents TheEvents;
     public GameObject[] Targets;
     // Start is called before the first frame update
     void Start()
     {
-
+        OnChefDistance = 2.0f;
+        TheEvents = GameObject.Find("TheEvents").GetComponent<TheEvents>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        CookingCost = TheEvents.CookingCost;
         Targets = GameObject.FindGameObjectsWithTag("Target");
         CheckOnChef();
     }

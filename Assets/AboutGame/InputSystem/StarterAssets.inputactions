@@ -45,7 +45,7 @@
                     "name": "Fire",
                     "type": "PassThrough",
                     "id": "727c5aa6-5793-4d4f-a0a1-84ad36fb32e4",
-                    "expectedControlType": "",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -54,7 +54,7 @@
                     "name": "Pick",
                     "type": "PassThrough",
                     "id": "0404ad26-9cae-4ccd-9e21-bf17339884f1",
-                    "expectedControlType": "",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -259,8 +259,19 @@
                 },
                 {
                     "name": "",
+                    "id": "d187e306-9f77-4c31-b8e3-0e80a44a4dde",
+                    "path": "<VirtualMouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardMouse",
+                    "action": "Fire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "9c900de6-e647-430e-bc14-8cfbaa0ab7ff",
-                    "path": "<Mouse>/rightButton",
+                    "path": "<Joystick>/stick/down",
                     "interactions": "",
                     "processors": "",
                     "groups": "KeyboardMouse",
@@ -271,7 +282,7 @@
                 {
                     "name": "",
                     "id": "fb5054a9-7b20-4839-bceb-99ae711d0185",
-                    "path": "<Mouse>/leftButton",
+                    "path": "<Joystick>/stick/left",
                     "interactions": "",
                     "processors": "",
                     "groups": "KeyboardMouse",

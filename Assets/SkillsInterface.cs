@@ -5,13 +5,16 @@ using UnityEngine;
 public class SkillsInterface : MonoBehaviour
 {
     public int[] ChosenSkillNumbers;
+    public TheEvents TheEvents;
     public GameObject[] SkillBtns;
     public GameObject[] PosList;
+    public int SkillBonusTime = 0;
     // Start is called before the first frame update
     void Start()
     {
         SkillBtns = GameObject.FindGameObjectsWithTag("SkillBtn");
         PosList = GameObject.FindGameObjectsWithTag("PosList");
+        TheEvents = GameObject.Find("TheEvents").GetComponent<TheEvents>();
         foreach (GameObject SkillBtn in SkillBtns)
         {
             SkillBtn.SetActive(false);
@@ -22,7 +25,7 @@ public class SkillsInterface : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        ScoreAndSkills();
     }
 
     public void ShowRandomSkills()
@@ -71,10 +74,12 @@ public class SkillsInterface : MonoBehaviour
 
     public void AddChairsLimit()
     {
+        TheEvents.MaxChair = (int)(TheEvents.MaxChair * 1.2);
         DoWhileEndChoosing();
     }
     public void MakeFasterPizza()
     {
+        TheEvents.CookingCost -= TheEvents.CookingCost * 0.2f;
         DoWhileEndChoosing();
     }
     public void ChairAttractive()
@@ -83,6 +88,7 @@ public class SkillsInterface : MonoBehaviour
     }
     public void SuperDish()
     {
+        TheEvents.MaxPizza += 1;
         DoWhileEndChoosing();
     }
     public void BadBehaviour()
@@ -100,6 +106,15 @@ public class SkillsInterface : MonoBehaviour
         foreach (GameObject SkillBtn in SkillBtns)
         {
             SkillBtn.SetActive(false);
+        }
+    }
+
+    public void ScoreAndSkills()
+    {
+        if(TheEvents.GetComponent<TheEvents>().Score / 30 >= SkillBonusTime)
+        {
+            ShowRandomSkills();
+            SkillBonusTime += 1;
         }
     }
 

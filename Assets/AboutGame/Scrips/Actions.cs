@@ -9,7 +9,7 @@ public class Actions : MonoBehaviour
     public GameObject[] EnemiesList;
     public StarterAssets.StarterAssetsInputs SInput;
     public PlayerInput Inputs;
-    public float PickDistance = 1.0f;
+    public float PickDistance;
     public GameObject DishPicking; //现在拿着的盘子
     public GameObject TheEvents;
     public bool isParalyzed = false; //是否处于被攻击的麻痹状态
@@ -17,11 +17,12 @@ public class Actions : MonoBehaviour
     public float GoldenTimeRemain = 0;
     public float GoldenTime = 0.3f;
     public bool CanChairBePlaced = true;
-    public float MinChairDistance = 1.0f;
+    public float MinChairDistance = 1.5f;
 
     // Start is called before the first frame update
     void Start()
     {
+        PickDistance = 2.0f;
         Inputs = GetComponent<PlayerInput>();
         SInput = GetComponent<StarterAssets.StarterAssetsInputs>();
         TheEvents = GameObject.Find("TheEvents");

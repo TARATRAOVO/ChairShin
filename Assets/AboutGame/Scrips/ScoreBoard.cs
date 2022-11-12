@@ -19,8 +19,7 @@ public class ScoreBoard : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Score = TheEvents.GetComponent<TheEvents>().Score;
-        ScoreText.text = "总流水（单位/美原$）：" + Score + "亿";
+        ScoreText.text = "总流水（单位/$）：" + TheEvents.GetComponent<TheEvents>().Score + "亿";
     }
 
 }

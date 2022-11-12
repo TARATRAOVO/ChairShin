@@ -8,6 +8,7 @@ public class EmotionSystem : MonoBehaviour
     public int DishesInPlayer = 0;
     public GameObject[] Targets;
     public GameObject[] Enemies;
+    public float StartTime;
     // Start is called before the first frame update
     void Start()
     {

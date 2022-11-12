@@ -8,15 +8,16 @@ public class Target : MonoBehaviour
     public bool IsCooking = false;
     public bool IsOnTable = false;
     public bool IsOnChef = false;
+    public TheEvents TheEvents;
     public GameObject[] Pizzas;
     public string WhoTag;
     public float PizzaLeft;
-    public float MaxPizza = 4.0f;
+    public float MaxPizza;
     public float PizzaPercent;
     // Start is called before the first frame update
     void Start()
     {
-
+        TheEvents = GameObject.Find("TheEvents").GetComponent<TheEvents>();
     }
 
     // Update is called once per frame
@@ -25,6 +26,7 @@ public class Target : MonoBehaviour
         TickUnpick();
         KeepOnGround();
         PizzaVision();
+        MaxPizza = TheEvents.MaxPizza;
     }
 
     public void PickORPlace()
@@ -48,7 +50,11 @@ public class Target : MonoBehaviour
             {
                 if (!IsCooking)
                 {
-                    transform.position = new Vector3(transform.position.x, 0.33333f, transform.position.z);
+                    if (!IsOnChef)
+                    {
+
+                        transform.position = new Vector3(transform.position.x, 0.33333f, transform.position.z);
+                    }
                 }
             }
         }
@@ -57,11 +63,11 @@ public class Target : MonoBehaviour
     public void PizzaVision()
     {
         PizzaPercent = PizzaLeft / MaxPizza;
-        
-        foreach(GameObject Pizza in Pizzas)
+
+        foreach (GameObject Pizza in Pizzas)
         {
-            PizzaPercent -=  1.0f/Pizzas.Length;
-            if(PizzaPercent >= 0)
+            PizzaPercent -= 1.0f / Pizzas.Length;
+            if (PizzaPercent >= 0)
             {
                 Pizza.SetActive(true);
             }

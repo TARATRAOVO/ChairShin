@@ -31,6 +31,27 @@ namespace StarterAssets
             Duplicator = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Duplicate>();
         }
 
+        private void Update()
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                duplicate = true;
+                Duplicator.DoDuplicate();
+            }
+            else
+            {
+                duplicate = false;
+            }
+
+            if (Input.GetMouseButtonDown(1))
+            {
+
+                PlayerActions.Pick();
+
+            }
+
+        }
+
 
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
         public void OnMove(InputValue value)

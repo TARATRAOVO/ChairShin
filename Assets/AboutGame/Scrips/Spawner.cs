@@ -5,7 +5,8 @@ using UnityEngine;
 public class Spawner : MonoBehaviour
 {
     public GameObject[] Enemies;
-    public int SpawnGap = 1;
+    public float SpawnGap;
+    public TheEvents TheEvents;
     private float StartTime;
     private float LastSpawnTime;
     public Transform[] SpawnPoints;
@@ -13,6 +14,7 @@ public class Spawner : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        TheEvents = GameObject.Find("TheEvents").GetComponent<TheEvents>();
         StartTime = Time.time;
         SpawnPoints = GetComponentsInChildren<Transform>();
     }
@@ -20,6 +22,7 @@ public class Spawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        SpawnGap = TheEvents.SpawnGap;
         Spawn();
     }
 
@@ -39,6 +42,8 @@ public class Spawner : MonoBehaviour
             LastSpawnTime = Time.time;
         }
     }
+
+
 
 
 

@@ -21,9 +21,10 @@ public class Duplicate : MonoBehaviour
 
     public void DoDuplicate()
     {
+        Vector3 ToDuPlace = new Vector3(this.transform.position.x, 0.01f, this.transform.position.z);
         if (GameObject.FindGameObjectWithTag("Player").GetComponent<Actions>().CanChairBePlaced == true)
         {
-            Instantiate(CurrentChair, this.transform.position, this.transform.rotation, Towers.transform);
+            Instantiate(CurrentChair, ToDuPlace, this.transform.rotation, Towers.transform);
         }
     }
 
